@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Author;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AuthorController extends Controller
 {
@@ -21,9 +22,15 @@ class AuthorController extends Controller
 
     public function create(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email|unique:authors',
+            'location' => 'required|alpha'
+        ]);
+
         $author = Author::create($request->all());
 
-        return response()->json($author, 201);
+        return response()->json($author, Response::HTTP_CREATED);
     }
 
     public function update($id, Request $request)
@@ -31,12 +38,12 @@ class AuthorController extends Controller
         $author = Author::findOrFail($id);
         $author->update($request->all());
 
-        return response()->json($author, 200);
+        return response()->json($author);
     }
 
     public function delete($id)
     {
         Author::findOrFail($id)->delete();
-        return response('Deleted Successfully', 200);
+        return response('Deleted Successfully');
     }
 }

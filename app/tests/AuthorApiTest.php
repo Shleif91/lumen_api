@@ -2,11 +2,12 @@
 
 use App\Author;
 use Illuminate\Http\Response;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class AuthorApiTest extends TestCase
 {
+    use DatabaseTransactions;
+
     public function testCreateAuthor()
     {
         $userInfo = [
@@ -18,23 +19,37 @@ class AuthorApiTest extends TestCase
             'location' => 'Belarus',
         ];
 
-        $this->post('/api/authors', $userInfo);
-
-        $responseData = json_decode($this->response->getContent(), true);
+        $this->post('/api/authors', $userInfo)
+            ->seeJsonContains($userInfo);
 
         $this->assertEquals(Response::HTTP_CREATED, $this->response->getStatusCode());
-        $this->assertEquals($userInfo['name'], $responseData['name']);
-        $this->assertEquals($userInfo['email'], $responseData['email']);
+    }
+
+    public function testCreateAuthorWithoutName()
+    {
+        $userInfo = [
+            'email' => 'shyherpunk@gmail.com',
+            'location' => 'Belarus',
+        ];
+
+        $this->post('/api/authors', $userInfo)
+            ->seeJsonEquals([
+                'name' => ['The name field is required.']
+            ]);
+
+        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->response->getStatusCode());
     }
 
     public function testGetAuthorById()
     {
-        $author = Author::find(1);
-        $this->get('/api/authors/1');
-
-        $responseData = json_decode($this->response->getContent(), true);
+        $author = factory('App\Author')->create();
+        $this->get(sprintf('/api/authors/', $author->id))
+            ->seeJsonContains([
+                'name' => $author->name,
+                'email' => $author->email,
+                'location' => $author->location,
+            ]);
 
         $this->assertEquals(Response::HTTP_OK, $this->response->getStatusCode());
-        $this->assertEquals($responseData['email'], $author->email);
     }
 }
