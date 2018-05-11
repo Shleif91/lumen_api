@@ -1,0 +1,63 @@
+<?php
+
+use Illuminate\Http\Response;
+use Laravel\Lumen\Testing\DatabaseTransactions;
+
+class AuthTest extends TestCase
+{
+    use DatabaseTransactions;
+
+    public function testAuthenticate()
+    {
+        factory('App\User')->create([
+            'email' => 'shyherpunk@gmail.com'
+        ]);
+
+        $userInfo = [
+            'email' => 'shyherpunk@gmail.com',
+            'password' => '123456',
+        ];
+
+        $this->post('/api/login', $userInfo);
+
+        $this->assertEquals(Response::HTTP_OK, $this->response->getStatusCode());
+    }
+
+    public function testAuthenticateWithWrongEmail()
+    {
+        factory('App\User')->create([
+            'email' => 'testuser@gmail.com'
+        ]);
+
+        $userInfo = [
+            'email' => 'shyherpunk@gmail.com',
+            'password' => '123456',
+        ];
+
+        $this->post('/api/login', $userInfo)
+            ->seeJsonEquals([
+                'error' => ['Email does not exist.']
+            ]);
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->response->getStatusCode());
+    }
+
+    public function testAuthenticateWithWrongPassword()
+    {
+        factory('App\User')->create([
+            'email' => 'shyherpunk@gmail.com'
+        ]);
+
+        $userInfo = [
+            'email' => 'shyherpunk@gmail.com',
+            'password' => '654321',
+        ];
+
+        $this->post('/api/login', $userInfo)
+            ->seeJsonEquals([
+                'error' => ['Email or password is wrong.']
+            ]);
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->response->getStatusCode());
+    }
+}

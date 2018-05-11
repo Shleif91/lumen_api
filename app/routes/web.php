@@ -14,4 +14,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->delete('authors/{id}', ['uses' => 'AuthorController@delete']);
 
     $router->put('authors/{id}', ['uses' => 'AuthorController@update']);
+
+    $router->post('login', ['uses' => 'AuthController@authenticate']);
 });
+

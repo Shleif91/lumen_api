@@ -1,6 +1,5 @@
 <?php
 
-use App\Author;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
