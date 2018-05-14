@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\User;
+use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -40,6 +41,7 @@ class AuthController extends Controller
         }
 
         if (Hash::check($request->get('password'), $user->password)) {
+            $user->update(['last_login_at' => Carbon::now()]);
             return response()->json([
                 'token' => $this->getJWT($user)
             ]);
