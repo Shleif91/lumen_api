@@ -19,8 +19,10 @@ class AuthTest extends TestCase
         ];
 
         $this->post('/api/login', $userInfo);
+        $responseAsArray = json_decode($this->response->getContent(), true);
 
         $this->assertEquals(Response::HTTP_OK, $this->response->getStatusCode());
+        $this->assertTrue(key_exists('token', $responseAsArray));
     }
 
     public function testAuthenticateWithWrongEmail()
@@ -59,5 +61,25 @@ class AuthTest extends TestCase
             ]);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->response->getStatusCode());
+    }
+
+    public function testAuthenticateAndSetLastLogin()
+    {
+        factory('App\User')->create([
+            'email' => 'shyherpunk@gmail.com'
+        ]);
+
+        $userInfo = [
+            'email' => 'shyherpunk@gmail.com',
+            'password' => '123456',
+        ];
+
+        $this->post('/api/login', $userInfo);
+        $timestamp = \Carbon\Carbon::now();
+        $responseAsArray = json_decode($this->response->getContent(), true);
+
+        $this->assertEquals(Response::HTTP_OK, $this->response->getStatusCode());
+        $this->assertTrue(key_exists('token', $responseAsArray));
+        $this->seeInDatabase('users', ['last_login_at' => $timestamp]);
     }
 }
