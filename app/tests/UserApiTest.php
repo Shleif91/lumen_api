@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\JWTService;
+use App\User;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -59,6 +60,7 @@ class UserApiTest extends TestCase
                 'name' => $user->name,
                 'email' => $user->email,
                 'last_login_at' => $user->last_login_at,
+                'role' => User::ROLE_ADMIN
             ]);
 
         $this->assertEquals(Response::HTTP_OK, $this->response->getStatusCode());
