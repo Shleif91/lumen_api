@@ -18,11 +18,3 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'password' => app('hash')->make('123456'),
     ];
 });
-
-$factory->define(App\Author::class, function (Faker\Generator $faker) {
-    return [
-        'name' => $faker->name,
-        'email' => $faker->email,
-        'location' => $faker->countryISOAlpha3,
-    ];
-});

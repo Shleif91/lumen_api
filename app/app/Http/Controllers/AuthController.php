@@ -4,28 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Services\JWTService;
 use App\User;
 use Carbon\Carbon;
-use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    protected function getJWT(User $user): string
-    {
-        $payload = [
-            'iss' => 'lumen-jwt',
-            'sub' => $user->id,
-            'iat' => time(),
-            'exp' => time() + 60*60,
-        ];
-
-        return JWT::encode($payload, env('JWT_SECRET'));
-    }
-
-    public function authenticate(Request $request, User $user)
+    public function authenticate(Request $request)
     {
         $this->validate($request, [
             'email' => 'required|email',
@@ -42,8 +30,10 @@ class AuthController extends Controller
 
         if (Hash::check($request->get('password'), $user->password)) {
             $user->update(['last_login_at' => Carbon::now()]);
+            $jwtService = app(JWTService::class);
+
             return response()->json([
-                'token' => $this->getJWT($user)
+                'token' => $jwtService->getJWT($user)
             ]);
         }
 

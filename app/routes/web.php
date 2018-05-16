@@ -4,17 +4,23 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('users',  ['uses' => 'UserController@showAllUsers']);
+$router->post('api/login', ['uses' => 'AuthController@authenticate']);
 
-    $router->get('users/{id}', ['uses' => 'UserController@showOneUser']);
+$router->group(
+    [
+        'prefix' => 'api',
+        'middleware' => 'jwt.auth'
+    ],
+    function () use ($router) {
+        $router->get('users',  ['uses' => 'UserController@showAllUsers']);
 
-    $router->post('users', ['uses' => 'UserController@create']);
+        $router->get('users/{id}', ['uses' => 'UserController@showOneUser']);
 
-    $router->delete('users/{id}', ['uses' => 'UserController@delete']);
+        $router->post('users', ['uses' => 'UserController@create']);
 
-    $router->put('users/{id}', ['uses' => 'UserController@update']);
+        $router->delete('users/{id}', ['uses' => 'UserController@delete']);
 
-    $router->post('login', ['uses' => 'AuthController@authenticate']);
-});
+        $router->put('users/{id}', ['uses' => 'UserController@update']);
+    }
+);
 

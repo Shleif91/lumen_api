@@ -1,11 +1,23 @@
 <?php
 
+use App\Services\JWTService;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class UserApiTest extends TestCase
 {
     use DatabaseTransactions;
+
+    private $token;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $user = factory(\App\User::class)->create();
+
+        $this->token = app(JWTService::class)->getJWT($user);
+    }
 
     public function testCreateUser()
     {
@@ -15,7 +27,7 @@ class UserApiTest extends TestCase
             'password' => '123456'
         ];
 
-        $this->post('/api/users', $userInfo)
+        $this->post('/api/users', $userInfo, ['token' => $this->token])
             ->seeJsonContains([
                 'name' => 'Shleif91',
                 'email' => 'shyherpunk@gmail.com',
@@ -31,7 +43,7 @@ class UserApiTest extends TestCase
             'password' => '123456',
         ];
 
-        $this->post('/api/users', $userInfo)
+        $this->post('/api/users', $userInfo, ['token' => $this->token])
             ->seeJsonEquals([
                 'name' => ['The name field is required.']
             ]);
@@ -42,7 +54,7 @@ class UserApiTest extends TestCase
     public function testGetUserById()
     {
         $user = factory('App\User')->create();
-        $this->get(sprintf('/api/users/', $user->id))
+        $this->get(sprintf('/api/users/', $user->id), ['token' => $this->token])
             ->seeJsonContains([
                 'name' => $user->name,
                 'email' => $user->email,
