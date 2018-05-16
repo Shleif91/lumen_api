@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Illuminate\Auth\Authenticatable;
@@ -12,10 +14,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable;
 
-    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_MANAGER = 'ROLE_MANAGER';
-    const ROLE_USER = 'ROLE_USER';
+    const ROLE_SUPER_ADMIN = 100;
+    const ROLE_ADMIN = 30;
+    const ROLE_MANAGER = 20;
+    const ROLE_USER = 10;
 
     protected $fillable = [
         'name', 'email', 'last_login_at', 'role'

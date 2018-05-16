@@ -10,7 +10,7 @@ class AddedRoleInUsersTable extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default(User::ROLE_ADMIN);
+            $table->integer('role')->default(User::ROLE_ADMIN);
         });
     }
 
