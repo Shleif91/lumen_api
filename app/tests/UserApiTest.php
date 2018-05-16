@@ -23,15 +23,15 @@ class UserApiTest extends TestCase
     public function testCreateUser()
     {
         $userInfo = [
-            'name' => 'Shleif91',
-            'email' => 'shyherpunk@gmail.com',
+            'name' => 'Test User',
+            'email' => 'testuser@example.com',
             'password' => '123456'
         ];
 
         $this->post('/api/users', $userInfo, ['token' => $this->token])
             ->seeJsonContains([
-                'name' => 'Shleif91',
-                'email' => 'shyherpunk@gmail.com',
+                'name' => 'Test User',
+                'email' => 'testuser@example.com',
             ]);
 
         $this->assertEquals(Response::HTTP_CREATED, $this->response->getStatusCode());
@@ -40,7 +40,7 @@ class UserApiTest extends TestCase
     public function testCreateUserWithoutName()
     {
         $userInfo = [
-            'email' => 'shyherpunk@gmail.com',
+            'email' => 'testuser@example.com',
             'password' => '123456',
         ];
 

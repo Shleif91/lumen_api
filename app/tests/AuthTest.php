@@ -10,11 +10,11 @@ class AuthTest extends TestCase
     public function testAuthenticate()
     {
         factory('App\User')->create([
-            'email' => 'shyherpunk@gmail.com'
+            'email' => 'testuser@example.com'
         ]);
 
         $userInfo = [
-            'email' => 'shyherpunk@gmail.com',
+            'email' => 'testuser@example.com',
             'password' => '123456',
         ];
 
@@ -32,7 +32,7 @@ class AuthTest extends TestCase
         ]);
 
         $userInfo = [
-            'email' => 'shyherpunk@gmail.com',
+            'email' => 'testuser@example.com',
             'password' => '123456',
         ];
 
@@ -47,11 +47,11 @@ class AuthTest extends TestCase
     public function testAuthenticateWithWrongPassword()
     {
         factory('App\User')->create([
-            'email' => 'shyherpunk@gmail.com'
+            'email' => 'testuser@example.com'
         ]);
 
         $userInfo = [
-            'email' => 'shyherpunk@gmail.com',
+            'email' => 'testuser@example.com',
             'password' => '654321',
         ];
 
@@ -66,11 +66,11 @@ class AuthTest extends TestCase
     public function testAuthenticateAndSetLastLogin()
     {
         factory('App\User')->create([
-            'email' => 'shyherpunk@gmail.com'
+            'email' => 'testuser@example.com'
         ]);
 
         $userInfo = [
-            'email' => 'shyherpunk@gmail.com',
+            'email' => 'testuser@example.com',
             'password' => '123456',
         ];
 
